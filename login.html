@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - KataIndo</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Firebase Library (Versi 8 - Kompatibel) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0B1C2F;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            max-width: 440px;
+            width: 100%;
+            padding: 32px 24px;
+        }
+        
+        .text-gold { color: #D4AF37; }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 30px;
+            padding: 12px 16px;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #D4AF37;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .btn-primary {
+            background: #2C5F2D;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            width: 100%;
+            border: 1px solid #D4AF37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1B4D4F;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(44, 95, 45, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(11, 28, 47, 0.98);
+            border: 1px solid #D4AF37;
+            border-left: 4px solid #D4AF37;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #D4AF37;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <i class="fas fa-book-open text-4xl mb-2" style="color: #D4AF37;"></i>
+            <h1 class="text-3xl font-semibold text-white">Kata<span class="text-gold">Indo</span></h1>
+            <p class="text-sm text-gray-400 mt-1">Masuk ke akun Anda</p>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Email</label>
+                <input type="email" id="loginEmail" required class="input-field text-sm" placeholder="nama@email.com">
+            </div>
+            
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Password</label>
+                <input type="password" id="loginPassword" required class="input-field text-sm" placeholder="••••••••">
+            </div>
+            
+            <button type="submit" id="loginBtn" class="btn-primary text-sm py-3">
+                <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+            </button>
+        </form>
+        
+        <p class="text-center text-xs text-gray-400 mt-6">
+            Belum punya akun? 
+            <a href="register.html" class="text-gold hover:underline">Daftar sekarang</a>
+        </p>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ========== INIT FIREBASE ==========
+        // GANTI DENGAN KONFIGURASI FIREBASE ANDA!
+        const firebaseConfig = {
+            apiKey: "AIzaSyBETyWYNWJpMc0SMO0V4oo5QC7j6pllMFE", // GANTI DENGAN PUNYA ANDA!
+            authDomain: "katiando-app.firebaseapp.com",
+            projectId: "katiando-app",
+            storageBucket: "katiando-app.firebasestorage.app",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123"
+        };
+
+        // Initialize Firebase (v8)
+        firebase.initializeApp(firebaseConfig);
+        
+        // ========== TOAST ==========
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'} mr-2" style="color: #D4AF37;"></i>${message}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ========== LOGIN DENGAN FIREBASE ==========
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            console.log('========== LOGIN ATTEMPT ==========');
+            console.log('📧 Email:', email);
+            
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner mr-2"></span> Memproses...';
+            
+            try {
+                console.log('🔥 Mencoba login ke Firebase...');
+                
+                // LOGIN KE FIREBASE AUTH (v8)
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                
+                console.log('✅ Login berhasil:', userCredential.user);
+                
+                // Ambil data dari localStorage (nama dari registrasi)
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const userData = users.find(u => u.email === email);
+                
+                // Simpan session
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', userData ? userData.name : email.split('@')[0]);
+                
+                showToast('Login berhasil!');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                console.error('Error code:', error.code);
+                
+                let pesan = 'Email atau password salah';
+                
+                if (error.code === 'auth/user-not-found') {
+                    pesan = 'Email tidak terdaftar';
+                } else if (error.code === 'auth/wrong-password') {
+                    pesan = 'Password salah';
+                } else if (error.code === 'auth/invalid-email') {
+                    pesan = 'Format email tidak valid';
+                } else if (error.code === 'auth/network-request-failed') {
+                    pesan = 'Koneksi internet bermasalah';
+                } else if (error.code === 'auth/too-many-requests') {
+                    pesan = 'Terlalu banyak percobaan. Coba lagi nanti';
+                }
+                
+                showToast(pesan, 'error');
+                
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Masuk';
+            }
+        });
+
+        // ========== CEK LOGIN ==========
+        if (localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

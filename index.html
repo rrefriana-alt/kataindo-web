@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>KataIndo - Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0B1C2F;
+            min-height: 100vh;
+            color: #E5E7EB;
+            overflow-x: hidden;
+        }
+        
+        /* Container */
+        .container-custom {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        /* Background */
+        .bg-custom {
+            background: linear-gradient(135deg, #0B1C2F 0%, #1B4D4F 100%);
+        }
+        
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        /* Stat Cards */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 16px;
+            padding: 16px 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        /* Text Colors */
+        .text-gold { color: #D4AF37; }
+        .border-gold { border-color: rgba(212, 175, 55, 0.2); }
+        
+        /* ===== NAVBAR & DROPDOWN ===== */
+        .navbar {
+            background: rgba(11, 28, 47, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 40px;
+            padding: 8px 16px;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        #userDropdownContainer {
+            position: relative;
+            z-index: 9999;
+        }
+        
+        #userMenuButton {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 30px;
+            padding: 6px 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            z-index: 10000;
+        }
+        
+        #userMenuButton:hover {
+            border-color: #D4AF37;
+        }
+        
+        #userDropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            z-index: 10001 !important;
+            min-width: 200px;
+            background: rgba(11, 28, 47, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid #D4AF37;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #userDropdown a {
+            display: block;
+            padding: 12px 20px;
+            color: #E5E7EB;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        #userDropdown a:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Pastikan elemen lain tidak menutupi dropdown */
+        .glass-card, .stat-card {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            background: #2C5F2D;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid #D4AF37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #1B4D4F;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(44, 95, 45, 0.5);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 13px;
+            border: 1px solid #D4AF37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* ===== WORD CARDS ===== */
+        .word-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            padding: 12px 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .word-card:hover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .word-card .bookmark-icon {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: #0B1C2F;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #D4AF37;
+            font-size: 12px;
+        }
+        
+        .word-card:hover .bookmark-icon {
+            opacity: 1;
+        }
+        
+        /* RESULTS GRID - RESPONSIF */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .results-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 16px;
+            }
+        }
+        
+        /* ===== SEARCH INPUT ===== */
+        .search-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 30px;
+            padding: 12px 16px;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .search-input:focus {
+            border-color: #D4AF37;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* ===== MODE BUTTONS ===== */
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 30px;
+            padding: 8px 16px;
+            color: #E5E7EB;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .mode-btn.active {
+            background: #2C5F2D;
+            border-color: #D4AF37;
+            color: white;
+        }
+        
+        .mode-btn:hover:not(.active) {
+            border-color: #D4AF37;
+        }
+        
+        /* ===== TABS - HANYA BOOKMARK ===== */
+        .tabs-container {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .tab-btn {
+            padding: 12px 16px;
+            color: rgba(229, 231, 235, 0.6);
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn i {
+            color: #D4AF37;
+            font-size: 16px;
+        }
+        
+        .tab-btn:hover {
+            color: #D4AF37;
+        }
+        
+        .tab-btn.active {
+            color: #D4AF37;
+            border-bottom-color: #D4AF37;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ===== PAGINATION ===== */
+        .pagination-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #E5E7EB;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 12px;
+            min-width: 32px;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #D4AF37;
+        }
+        
+        .pagination-btn.active {
+            background: #2C5F2D;
+            border-color: #D4AF37;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            border: 2px solid rgba(212, 175, 55, 0.1);
+            border-top: 2px solid #D4AF37;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(11, 28, 47, 0.98);
+            border: 1px solid #D4AF37;
+            border-left: 4px solid #D4AF37;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10000;
+            font-size: 14px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0B1C2F;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #2C5F2D;
+            border-radius: 2px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-custom">
+    <!-- Navbar -->
+    <div class="container-custom">
+        <nav class="navbar w-full mt-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-xl sm:text-2xl font-bold text-white">Kata<span class="text-gold">Indo</span></span>
+            </div>
+            
+            <!-- User Dropdown - HANYA BOOKMARK & LOGOUT -->
+            <div class="relative" id="userDropdownContainer">
+                <button id="userMenuButton" class="flex items-center">
+                    <i class="fas fa-user-circle text-xl sm:text-2xl" style="color: #D4AF37;"></i>
+                    <span id="userNameDisplay" class="text-xs sm:text-sm font-medium text-white max-w-[80px] sm:max-w-none truncate">User</span>
+                    <i class="fas fa-chevron-down text-[10px] sm:text-xs transition-transform duration-300" id="dropdownArrow" style="color: #D4AF37;"></i>
+                </button>
+                
+                <!-- Dropdown Menu - HANYA BOOKMARK & LOGOUT -->
+                <div id="userDropdown" class="hidden">
+                    <div class="p-4 border-b border-gold/20">
+                        <p class="font-semibold text-white text-base" id="userFullName">User</p>
+                        <p class="text-sm text-gray-400 truncate" id="userEmailDisplay">user@email.com</p>
+                    </div>
+                    
+                    <div class="py-2">
+                        <a href="#" class="dropdown-item" onclick="event.preventDefault(); showTab('bookmark');">
+                            <i class="fas fa-bookmark mr-3 w-5" style="color: #D4AF37;"></i> Bookmark
+                        </a>
+                    </div>
+                    
+                    <div class="py-2 border-t border-gold/20">
+                        <a href="#" onclick="logout()" class="dropdown-item" style="color: #9E2B2B;">
+                            <i class="fas fa-sign-out-alt mr-3 w-5"></i> Keluar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container-custom mt-4 sm:mt-6 md:mt-8">
+        <!-- Welcome Section -->
+        <div class="glass-card p-6 sm:p-8 mb-4 sm:mb-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-medium mb-1">
+                        Selamat datang, <span class="text-gold" id="welcomeName">User</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-gray-400">Dashboard pribadi Anda</p>
+                </div>
+            </div>
+            
+            <!-- Quick Stats - HANYA 2 KOLOM (Total Kata & Bookmark) -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
+                <div class="stat-card text-center">
+                    <div class="text-lg sm:text-xl md:text-2xl font-semibold text-gold" id="quickTotalKata">79.988</div>
+                    <div class="text-[10px] sm:text-xs text-gray-400">Total Kata</div>
+                </div>
+                <div class="stat-card text-center">
+                    <div class="text-lg sm:text-xl md:text-2xl font-semibold text-gold" id="quickBookmarkCount">0</div>
+                    <div class="text-[10px] sm:text-xs text-gray-400">Bookmark</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid - HANYA 2 KOLOM (Database & Bookmark) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div class="stat-card p-3 sm:p-4">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <i class="fas fa-database text-gold text-sm sm:text-base"></i>
+                    <div>
+                        <p class="text-[10px] sm:text-xs text-gray-400">Database</p>
+                        <p class="text-sm sm:text-base font-semibold text-gold" id="totalKataStats">79.988</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card p-3 sm:p-4">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <i class="fas fa-bookmark text-gold text-sm sm:text-base"></i>
+                    <div>
+                        <p class="text-[10px] sm:text-xs text-gray-400">Bookmark</p>
+                        <p class="text-sm sm:text-base font-semibold text-gold" id="bookmarkCount">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="glass-card p-4 sm:p-6 mb-4 sm:mb-6">
+            <h2 class="text-base sm:text-lg font-medium text-center mb-3 sm:mb-4 flex items-center justify-center gap-2">
+                <i class="fas fa-search text-gold"></i> Pencarian Kata
+            </h2>
+            
+            <!-- Mode Selector -->
+            <div class="flex justify-center gap-2 mb-3 sm:mb-4">
+                <button id="modeAwalan" class="mode-btn active">Awalan</button>
+                <button id="modeAkhiran" class="mode-btn">Akhiran</button>
+            </div>
+
+            <!-- Search Box -->
+            <div class="max-w-xl mx-auto">
+                <div class="relative">
+                    <input type="text" id="searchInput" 
+                           placeholder="Ketik kata..." 
+                           class="search-input">
+                    <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-sm sm:text-base" style="color: #D4AF37;"></i>
+                </div>
+                
+                <!-- Search Info -->
+                <div class="flex justify-between items-center mt-2 sm:mt-3">
+                    <span class="text-[10px] sm:text-xs text-gray-400">
+                        <i class="fas fa-database mr-1" style="color: #D4AF37;"></i>
+                        <span>Hasil: <span id="jumlahHasil" class="text-gold font-medium">0</span></span>
+                    </span>
+                    <span class="text-[10px] sm:text-xs text-gray-400">
+                        <i class="fas fa-tag mr-1" style="color: #D4AF37;"></i>
+                        <span>Mode: <span id="modeLabel" class="text-gold font-medium">Awalan</span></span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div class="mt-4 sm:mt-6 min-h-[250px] sm:min-h-[300px]">
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden flex flex-col items-center justify-center py-6 sm:py-8">
+                    <div class="loading-spinner mb-2 sm:mb-3"></div>
+                    <p class="text-xs text-gray-400">Memuat...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="text-center py-6 sm:py-8">
+                    <i class="fas fa-search text-2xl sm:text-3xl mb-2 sm:mb-3" style="color: rgba(212, 175, 55, 0.3);"></i>
+                    <p class="text-xs sm:text-sm text-gray-400">Mulai mengetik untuk mencari kata</p>
+                </div>
+
+                <!-- Results Grid -->
+                <div id="resultsGrid" class="results-grid"></div>
+                
+                <!-- Pagination -->
+                <div id="paginationContainer" class="flex justify-center items-center gap-1 sm:gap-2 mt-4 flex-wrap"></div>
+            </div>
+        </div>
+
+        <!-- Bookmark Tab Section -->
+        <div class="glass-card p-4 sm:p-6 mb-6">
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="showTab('bookmark')">
+                    <i class="fas fa-bookmark"></i> Bookmark
+                </button>
+            </div>
+
+            <!-- Bookmark Tab -->
+            <div id="bookmarkTab" class="tab-content active mt-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-sm sm:text-base font-medium flex items-center gap-2">
+                        <i class="fas fa-bookmark text-gold"></i> Bookmark
+                    </h3>
+                    <button class="btn-outline text-[10px] sm:text-xs py-1 px-2 sm:py-1.5 sm:px-3" onclick="exportBookmarks()">
+                        <i class="fas fa-download mr-1"></i> Export
+                    </button>
+                </div>
+                <div id="bookmarkList" class="space-y-1 sm:space-y-2 max-h-64 overflow-y-auto text-xs sm:text-sm"></div>
+                <div id="emptyBookmark" class="text-center py-6 hidden">
+                    <i class="fas fa-bookmark text-2xl mb-2" style="color: rgba(212, 175, 55, 0.3);"></i>
+                    <p class="text-xs text-gray-400">Belum ada bookmark</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container-custom py-4 sm:py-6 mt-4 text-center text-[10px] sm:text-xs text-gray-500 border-t border-gold/20">
+        <p>© 2025 KataIndo · Dikembangkan oleh @ihaans.</p>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="data.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+
+        // ========== CEK LOGIN ==========
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        // ========== DATA USER ==========
+        const userName = localStorage.getItem('userName') || 'User';
+        const userEmail = localStorage.getItem('userEmail') || 'user@email.com';
+        
+        document.getElementById('userNameDisplay').textContent = userName;
+        document.getElementById('userFullName').textContent = userName;
+        document.getElementById('welcomeName').textContent = userName;
+        document.getElementById('userEmailDisplay').textContent = userEmail;
+
+        // ========== DATABASE ==========
+        if (typeof databaseKata !== 'undefined') {
+            document.getElementById('totalKataStats').textContent = databaseKata.length.toLocaleString('id-ID');
+            document.getElementById('quickTotalKata').textContent = databaseKata.length.toLocaleString('id-ID');
+        }
+
+        // ========== DROPDOWN ==========
+        const userMenuButton = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownArrow = document.getElementById('dropdownArrow');
+
+        userMenuButton?.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (userDropdown.classList.contains('hidden')) {
+                userDropdown.classList.remove('hidden');
+                if (dropdownArrow) dropdownArrow.style.transform = 'rotate(180deg)';
+            } else {
+                userDropdown.classList.add('hidden');
+                if (dropdownArrow) dropdownArrow.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (userDropdown && !userDropdown.classList.contains('hidden')) {
+                if (!userMenuButton?.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                    if (dropdownArrow) dropdownArrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+
+        if (userDropdown) {
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        // ========== BOOKMARK ==========
+        let bookmarks = JSON.parse(localStorage.getItem('userBookmarks') || '[]');
+        document.getElementById('bookmarkCount').textContent = bookmarks.length;
+        document.getElementById('quickBookmarkCount').textContent = bookmarks.length;
+
+        // ========== SEARCH ==========
+        let currentMode = 'awalan';
+        let searchTimeout;
+        let currentResults = [];
+        let currentPage = 1;
+        
+        // ITEMS PER PAGE - Desktop 20, Mobile 12 (otomatis dari CSS grid)
+        const itemsPerPage = 20;
+
+        const searchInput = document.getElementById('searchInput');
+        const modeAwalan = document.getElementById('modeAwalan');
+        const modeAkhiran = document.getElementById('modeAkhiran');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const jumlahHasil = document.getElementById('jumlahHasil');
+        const modeLabel = document.getElementById('modeLabel');
+        const paginationContainer = document.getElementById('paginationContainer');
+
+        searchInput.addEventListener('input', handleSearch);
+
+        modeAwalan.addEventListener('click', () => {
+            currentMode = 'awalan';
+            modeAwalan.classList.add('active');
+            modeAkhiran.classList.remove('active');
+            modeLabel.textContent = 'Awalan';
+            searchInput.placeholder = 'Cari awalan...';
+            searchInput.value = '';
+            showEmptyState();
+        });
+
+        modeAkhiran.addEventListener('click', () => {
+            currentMode = 'akhiran';
+            modeAkhiran.classList.add('active');
+            modeAwalan.classList.remove('active');
+            modeLabel.textContent = 'Akhiran';
+            searchInput.placeholder = 'Cari akhiran...';
+            searchInput.value = '';
+            showEmptyState();
+        });
+
+        function handleSearch() {
+            clearTimeout(searchTimeout);
+            const query = searchInput.value.trim().toLowerCase();
+            
+            if (query.length > 0) {
+                showLoading();
+            }
+            
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 300);
+        }
+
+        function performSearch(query) {
+            if (typeof databaseKata === 'undefined') {
+                showError('Database error');
+                return;
+            }
+
+            if (query.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            if (currentMode === 'awalan') {
+                currentResults = databaseKata.filter(kata => kata.toLowerCase().startsWith(query));
+            } else {
+                currentResults = databaseKata.filter(kata => kata.toLowerCase().endsWith(query));
+            }
+            
+            jumlahHasil.textContent = currentResults.length.toLocaleString('id-ID');
+            currentPage = 1;
+            
+            if (currentResults.length === 0) {
+                showNoResults();
+                return;
+            }
+            
+            displayResults();
+        }
+
+        function displayResults() {
+            loadingState.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageResults = currentResults.slice(start, end);
+            
+            let html = '';
+            pageResults.forEach(kata => {
+                const escaped = kata.replace(/'/g, "\\'");
+                const isBookmarked = bookmarks.includes(kata);
+                
+                html += `
+                    <div class="word-card" onclick="copyToClipboard('${escaped}')">
+                        ${kata}
+                        <button class="bookmark-icon" onclick="event.stopPropagation(); toggleBookmark('${escaped}')">
+                            <i class="fas fa-bookmark ${isBookmarked ? 'text-gold' : 'text-gray-500'}"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            resultsGrid.innerHTML = html;
+            generatePagination(Math.ceil(currentResults.length / itemsPerPage));
+        }
+
+        function generatePagination(totalPages) {
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            html += `<button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            
+            for (let i = 1; i <= Math.min(5, totalPages); i++) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            if (totalPages > 5) {
+                html += `<span class="text-gray-500 px-1">...</span>`;
+                html += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            html += `<button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            
+            paginationContainer.innerHTML = html;
+        }
+
+        window.changePage = function(newPage) {
+            currentPage = newPage;
+            displayResults();
+            resultsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        function showLoading() {
+            loadingState.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            resultsGrid.innerHTML = '';
+            paginationContainer.innerHTML = '';
+        }
+
+        function showEmptyState() {
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyState.innerHTML = `
+                <i class="fas fa-search text-2xl sm:text-3xl mb-2" style="color: rgba(212, 175, 55, 0.3);"></i>
+                <p class="text-xs sm:text-sm text-gray-400">Mulai mengetik</p>
+            `;
+            resultsGrid.innerHTML = '';
+            jumlahHasil.textContent = '0';
+            paginationContainer.innerHTML = '';
+        }
+
+        function showNoResults() {
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyState.innerHTML = `
+                <i class="fas fa-frown text-2xl sm:text-3xl mb-2" style="color: rgba(212, 175, 55, 0.3);"></i>
+                <p class="text-xs sm:text-sm text-gray-400">Tidak ditemukan</p>
+            `;
+            resultsGrid.innerHTML = '';
+            paginationContainer.innerHTML = '';
+        }
+
+        function showError(msg) {
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyState.innerHTML = `
+                <i class="fas fa-exclamation-triangle text-2xl sm:text-3xl mb-2" style="color: #9E2B2B;"></i>
+                <p class="text-xs sm:text-sm text-gray-400">${msg}</p>
+            `;
+            resultsGrid.innerHTML = '';
+            jumlahHasil.textContent = '0';
+            paginationContainer.innerHTML = '';
+        }
+
+        // ========== BOOKMARK FUNCTIONS ==========
+        window.toggleBookmark = function(kata) {
+            if (bookmarks.includes(kata)) {
+                bookmarks = bookmarks.filter(b => b !== kata);
+                showToast('Bookmark dihapus');
+            } else {
+                bookmarks.push(kata);
+                showToast('Ditambahkan ke bookmark');
+            }
+            
+            localStorage.setItem('userBookmarks', JSON.stringify(bookmarks));
+            document.getElementById('bookmarkCount').textContent = bookmarks.length;
+            document.getElementById('quickBookmarkCount').textContent = bookmarks.length;
+            displayResults();
+            loadBookmarks();
+        };
+
+        function loadBookmarks() {
+            const list = document.getElementById('bookmarkList');
+            const empty = document.getElementById('emptyBookmark');
+            
+            if (bookmarks.length === 0) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            let html = '';
+            bookmarks.forEach((kata, i) => {
+                html += `
+                    <div class="flex justify-between items-center p-2 glass-card text-xs sm:text-sm">
+                        <span>${kata}</span>
+                        <button onclick="removeBookmark(${i})" class="text-gray-400 hover:text-gold">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        window.removeBookmark = function(i) {
+            bookmarks.splice(i, 1);
+            localStorage.setItem('userBookmarks', JSON.stringify(bookmarks));
+            document.getElementById('bookmarkCount').textContent = bookmarks.length;
+            document.getElementById('quickBookmarkCount').textContent = bookmarks.length;
+            loadBookmarks();
+            displayResults();
+            showToast('Bookmark dihapus');
+        };
+
+        window.exportBookmarks = function() {
+            if (bookmarks.length === 0) {
+                showToast('Tidak ada bookmark');
+                return;
+            }
+            const text = bookmarks.join('\n');
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bookmark.txt';
+            a.click();
+        };
+
+        // ========== UTILS ==========
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`"${text}" disalin`);
+            });
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fas fa-check-circle mr-2" style="color: #D4AF37;"></i>${msg}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ========== TABS ==========
+        window.showTab = function(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'bookmark') loadBookmarks();
+        };
+
+        // ========== LOGOUT ==========
+        window.logout = function() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        };
+
+        // ========== INIT ==========
+        loadBookmarks();
+        showEmptyState();
+    </script>
+</body>
+</html>
