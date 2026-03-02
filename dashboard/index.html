@@ -598,14 +598,14 @@
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
-    <script src="data.js"></script>
+    <script src="/data.js"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 600, once: true });
 
         // ========== CEK LOGIN ==========
         if (!localStorage.getItem('isLoggedIn')) {
-            window.location.href = 'login.html';
+            window.location.href = '/sign-in';
         }
 
         // ========== DATA USER ==========
@@ -933,7 +933,7 @@
         // ========== LOGOUT ==========
         window.logout = function() {
             localStorage.clear();
-            window.location.href = 'login.html';
+            window.location.href = '/sign-in';
         };
 
         // ========== INIT ==========
