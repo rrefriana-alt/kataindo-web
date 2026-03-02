@@ -431,7 +431,7 @@
             
             <p class="text-center text-xs text-gray-400 mt-6">
                 Sudah punya akun? 
-                <a href="login.html" class="text-gold hover:underline">Masuk</a>
+                <a href="/sign-in" class="text-gold hover:underline">Masuk</a>
             </p>
         </div>
         
@@ -480,7 +480,7 @@
         // ========== INIT FIREBASE ==========
         // GANTI DENGAN KONFIGURASI FIREBASE ANDA!
         const firebaseConfig = {
-            apiKey: "AIzaSyBETyWYNWJpMc0SMO0V4oo5QC7j6pllMFE", // GANTI DENGAN PUNYA ANDA!
+            apiKey: "AIzaSyBETyWYNWJpMc0SMO0V4oo5QC7j6pllMFE",
             authDomain: "kataindo-app.firebaseapp.com",
             projectId: "kataindo-app",
             storageBucket: "kataindo-app.firebasestorage.app",
@@ -796,7 +796,7 @@
                 showToast('Registrasi berhasil! Data tersimpan di Firebase.');
                 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = '/dashboard';
                 }, 1500);
                 
             } catch (error) {
@@ -899,7 +899,7 @@
 
         // ========== CEK LOGIN ==========
         if (localStorage.getItem('isLoggedIn')) {
-            window.location.href = 'index.html';
+            window.location.href = '/dashboard';
         }
     </script>
 </body>
